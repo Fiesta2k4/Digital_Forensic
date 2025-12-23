@@ -1,0 +1,78 @@
+Information Sciences 609 (2022) 1451–1488
+Contents lists available at ScienceDirect
+Information Sciences
+journal homepage: www.elsevier.com/locate/ins
+Digital image steganography: A literature survey
+Pratap Chandra Mandala,b, Imon Mukherjeeb,⇑, Goutam Paulc, B.N. Chatterjia,d
+a Computer Sc. & Engineering, B.P. Poddar Institute of Management & Technology, India
+bComputer Sc. & Engineering, Indian Institute of Information Technology Kalyani, India
+c R.C. Bose Centre for Cryptology and Security, Indian Statistical Institute, Kolkata, India
+dElectronics and Electrical Communication Engineering (Retd.), IIT Kharagpur, India
+art i cle info
+Article history:
+Received 20 November 2020
+Received in revised form 22 May 2022
+Accepted 22 July 2022
+Available online 28 July 2022
+Keyword:
+Data hiding
+Steganography
+Spatial domain
+Transform domain
+Information security
+Steganalysis
+abstract
+Steganography is the art of concealing information in a cover media in such a way that the
+presence of the information is unknown. Digital image steganography accomplishes the
+potential for protected communication that is crucial in most of the applications nowadays.
+Steganography has several beneficial applications. It has been driven to the frontrunner of
+present security systems by the amazing development in computational power, the rise in
+security consciousness. The main challenge in proposing a steganographic technique is to
+maintain a suitable balance among higher embedding capacity, imperceptibility, and secu
+rity that separate it from correlated systems like cryptography and watermarking. This
+article offers an extensive state-of-the-art review and analysis of some recent stegano
+graphic techniques. Furthermore, we have discussed popular steganography tools in detail.
+Challenges in the recent deep learning based steganographic techniques have been
+addressed. To explore the domain, the article concludes with mentioning some future
+research directions.
+2022 Elsevier Inc. All rights reserved.
+1. Introduction
+The internet revolution offers ease in digital communication; at the same time, it is also a challenge for us to secure the
+message over the open network. For addressing the security of information, several approaches are presented as shown in
+Fig. 1. The security system plays a vital role to restrict the messages from being seized by an unauthorized person. Cryptog
+raphy [1] protects the content of the information that allows only the sender and intended beneficiary of communication to
+view its contents. Information hiding techniques include steganography [2,3] and watermarking [4]. Both watermarking and
+steganography are used to obscure the confidential information within the innocent media like image, video, audio, and text,
+but both have different purposes. Watermarking is used for authentication and copyright protection of digital data. In con
+trast, steganography [5] is the art of concealing information. Imperceptibility is of major importance for steganographic tech
+nique, whereas watermarking provides the maximum importance to robustness. On the basis of the capability of recovering
+the cover images, data hiding techniques are categorized into two groups: irreversible [6] and reversible data hiding (RDH)
+[7]. If the cover image can be obtained after removal of the confidential data the process is said to be reversible data hiding;
+⇑ Corresponding author.
+E-mail addresses: pcmandal9@gmail.com (P.C. Mandal), imon@iiitkalyani.ac.in (I. Mukherjee), goutam.paul@isical.ac.in (G. Paul), bnchatterji@gmail.com
+(B.N. Chatterji).
+https://doi.org/10.1016/j.ins.2022.07.120
+0020-0255/ 2022 Elsevier Inc. All rights reserved.
+otherwiseit istermedasirreversibledatahiding.DE,histogramshifting,andInterpolationbasedtechniques,etc.,arethe
+examplesofreversibledatahidingtechniqueswhereasLSB,PVD,etc.,areexamplesof irreversibledatahidingtechniques.
+Conversely,steganalysis[8], istheartofidentifyingthehiddeninformationembeddedindigitalmedia.Aftertheheart
+breakingincidentsof11th September2001, researchershavegivengreat importancetothetopicsteganographyandste
+ganalysis[3]. Ithasalsonowbecomeanimportantresearchtopicduetothepopularityofsocialmediaapplicationslike
+Facebook,WhatsApp, etc. Bothhave several genuine applications and signifygreat researchopeningswaiting tobe
+addressed.
+1.1.Contributions
+1. Anextensivereviewofsteganographictechniquesindifferentdomainshasbeenprovided.Specialemphasishasbeen
+givenontheinsightfulanalysisontheunderdevelopedaspectsorfailcasesofthestate-of-the-artworks.Wehavealso
+providedacomparativeanalysisoftherecentstate-of-the-artworks.
+2. Performancemeasurementcriteriaofasteganographictechniquelikecapacity,quality,andsecurityhavebeendiscussed
+indetail.Securityofthetechniqueshavebeenanalyzedbyvariousstate-of-theartattackslikeRSanalysis,PDHattack,
+relativeentropy,steganalysistoolslikeStegExpose,andbenchmarktool likeStirMarkBenchmark4.0,etc.
+3. Applicationsofdatahidingtechniqueshavebeenmentioned.
+4. Challengesindeeplearningbasedsteganographyhavebeendiscussed.
+5. Thecommonlyusedsteganographytoolsarepresentedindetail.Acomparativeanalysisandtheirweaknessagainstthe
+steganalysistoolshavealsobeendiscussed.
+6. Somerecommendationshavebeengiventhatcanhelptoworkintherightway.
+7. Futureresearchdirectionshavebeenprovidedthatcanbepromisinginthecomingdays.
+AlltheimportantabbreviationsarelistedinTable1.Tohaveavibrantunderstandingoftheirfunctionalitiesacomparison
+amongcryptography,watermarking,andsteganographyisshowninTable2.
+

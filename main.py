@@ -5,166 +5,133 @@ import cv2
 import os
 import time
 import numpy as np
+import matplotlib.pyplot as plt
 
-# Giả định bạn sẽ import các thuật toán sau khi viết xong
-# from core.lsb_sub import LSB_Sub
-# from core.pvd import PVD
-# ... (TV1, TV2, TV3 sẽ code vào đây)
+# Import nội bộ
+from core.lsb_sub import LSB_Sub
+from utils import metrics, security
 
 class SteganoToolApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Spatial Domain Steganography Tool - Group 4")
-        self.root.geometry("1200x800")
+        self.root.title("Image Steganography Analyzer - Group 4")
+        self.root.geometry("1200x850")
 
-        # Biến lưu trữ dữ liệu
         self.cover_path = tk.StringVar()
-        self.stego_path = tk.StringVar()
         self.key_k = tk.StringVar()
-        self.method_var = tk.StringVar(value="LSB Substitution")
-        self.input_dir = "data/input" # Thư mục gốc chứa 3 folder bạn nêu
+        self.text_file_path = tk.StringVar(value="Chưa chọn file")
+        self.input_dir = "data/input"
         
+        if not os.path.exists("data/output"): os.makedirs("data/output")
         self.setup_ui()
 
     def setup_ui(self):
-        # --- PANEL TRÁI: Cấu hình ---
-        left_panel = ttk.LabelFrame(self.root, text=" Cấu hình nhúng ", padding=10)
-        left_panel.pack(side="left", fill="y", padx=10, pady=10)
+        # LEFT PANEL
+        left = ttk.LabelFrame(self.root, text=" Cấu hình ", padding=10)
+        left.pack(side="left", fill="y", padx=10, pady=10)
 
-        # 1. Chọn Folder & Ảnh
-        ttk.Label(left_panel, text="Chọn nguồn ảnh:").pack(anchor="w")
-        self.folder_cb = ttk.Combobox(left_panel, values=["BOSSbase_256", "SUNI_02", "SUNI_04"])
+        ttk.Label(left, text="1. Chọn nguồn ảnh:").pack(anchor="w")
+        self.folder_cb = ttk.Combobox(left, values=["BOSSbase_256", "SUNI_02", "SUNI_04"])
         self.folder_cb.pack(fill="x", pady=5)
         self.folder_cb.set("BOSSbase_256")
+        ttk.Button(left, text="Duyệt ảnh", command=self.load_image).pack(fill="x")
+        ttk.Label(left, textvariable=self.cover_path, font=("Arial", 7), wraplength=180).pack()
 
-        ttk.Button(left_panel, text="Chọn ảnh từ nguồn", command=self.load_image).pack(fill="x", pady=5)
-        ttk.Label(left_panel, textvariable=self.cover_path, foreground="blue", wraplength=200).pack()
+        ttk.Label(left, text="2. Khóa K:").pack(anchor="w", pady=(10,0))
+        ttk.Entry(left, textvariable=self.key_k, show="*").pack(fill="x")
 
-        # 2. Chọn Phương pháp (6 phương pháp)
-        ttk.Label(left_panel, text="Phương pháp:").pack(anchor="w", pady=(10, 0))
-        methods = [
-            "LSB Substitution", "LSB Matching", 
-            "PVD (Pixel Value Differencing)", "EMD (Exploiting Modification Direction)",
-            "Histogram Shifting (Reversible)", "Difference Expansion (Reversible)"
-        ]
-        method_menu = ttk.OptionMenu(left_panel, self.method_var, methods[0], *methods)
-        method_menu.pack(fill="x", pady=5)
+        ttk.Label(left, text="3. Tin nhắn:").pack(anchor="w", pady=(10,0))
+        ttk.Button(left, text="Chọn file .txt", command=self.load_text).pack(fill="x")
+        ttk.Label(left, textvariable=self.text_file_path, font=("Arial", 7)).pack()
+        self.msg_input = tk.Text(left, height=4, width=25)
+        self.msg_input.pack()
 
-        # 3. Khóa K & Tin nhắn
-        ttk.Label(left_panel, text="Khóa bảo mật K:").pack(anchor="w")
-        ttk.Entry(left_panel, textvariable=self.key_k, show="*").pack(fill="x", pady=5)
+        ttk.Button(left, text="EMBED & ANALYZE", command=self.run_embed).pack(fill="x", pady=20)
+        ttk.Button(left, text="EXTRACT", command=self.run_extract).pack(fill="x")
+        ttk.Button(left, text="XEM BIỂU ĐỒ ROC (DEMO)", command=security.plot_roc_demo).pack(fill="x", pady=5)
 
-        ttk.Label(left_panel, text="Tin nhắn bí mật:").pack(anchor="w")
-        self.msg_text = tk.Text(left_panel, height=5, width=25)
-        self.msg_text.pack(pady=5)
+        # RIGHT PANEL
+        right = tk.Frame(self.root)
+        right.pack(side="right", expand=True, fill="both", padx=10)
 
-        # 4. Nút bấm thực hiện
-        ttk.Button(left_panel, text="BẮT ĐẦU NHÚNG (EMBED)", command=self.process_embed).pack(fill="x", pady=20)
-        ttk.Button(left_panel, text="TRÍCH XUẤT (EXTRACT)", command=self.process_extract).pack(fill="x")
-        
-        # --- PANEL PHẢI: Hiển thị & Kết quả ---
-        right_panel = tk.Frame(self.root)
-        right_panel.pack(side="right", expand=True, fill="both", padx=10, pady=10)
+        img_f = tk.Frame(right)
+        img_f.pack(fill="both", expand=True)
+        self.l_cover = tk.Label(img_f, text="Cover", relief="solid")
+        self.l_cover.pack(side="left", expand=True, padx=5)
+        self.l_stego = tk.Label(img_f, text="Stego", relief="solid")
+        self.l_stego.pack(side="right", expand=True, padx=5)
 
-        # Khu vực hiển thị ảnh
-        img_frame = tk.Frame(right_panel)
-        img_frame.pack(fill="both", expand=True)
-
-        self.canvas_cover = tk.Label(img_frame, text="Ảnh Cover", borderwidth=2, relief="groove")
-        self.canvas_cover.pack(side="left", padx=10, expand=True)
-
-        self.canvas_stego = tk.Label(img_frame, text="Ảnh Stego", borderwidth=2, relief="groove")
-        self.canvas_stego.pack(side="right", padx=10, expand=True)
-
-        # Bảng kết quả (Chỉ số đánh giá)
-        res_frame = ttk.LabelFrame(right_panel, text=" Chỉ số đánh giá (Metrics) ")
-        res_frame.pack(fill="x", pady=10)
-
-        self.psnr_label = ttk.Label(res_frame, text="PSNR: -- dB")
-        self.psnr_label.grid(row=0, column=0, padx=20, pady=5)
-
-        self.ssim_label = ttk.Label(res_frame, text="SSIM: --")
-        self.ssim_label.grid(row=0, column=1, padx=20, pady=5)
-
-        self.time_label = ttk.Label(res_frame, text="Thời gian: -- ms")
-        self.time_label.grid(row=0, column=2, padx=20, pady=5)
-
-        self.reversible_label = ttk.Label(res_frame, text="Khôi phục ảnh gốc: --")
-        self.reversible_label.grid(row=0, column=3, padx=20, pady=5)
+        # METRICS DISPLAY
+        self.res_txt = tk.Text(right, height=10, font=("Consolas", 10), bg="#f0f0f0")
+        self.res_txt.pack(fill="x", pady=10)
 
     def load_image(self):
-        # Mở hộp thoại chọn file trong folder đã chọn
-        sub_folder = self.folder_cb.get()
-        initial_dir = os.path.join(self.input_dir, sub_folder)
+        path = filedialog.askopenfilename(initialdir=os.path.join(self.input_dir, self.folder_cb.get()))
+        if path:
+            self.cover_path.set(path)
+            img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+            self.show_img(img, "c")
+
+    def load_text(self):
+        path = filedialog.askopenfilename(filetypes=[("Text", "*.txt")])
+        if path: self.text_file_path.set(path)
+
+    def show_img(self, img, t="c"):
+        img_p = Image.fromarray(img).resize((380, 380))
+        img_t = ImageTk.PhotoImage(img_p)
+        if t == "c": self.l_cover.config(image=img_t); self.l_cover.image = img_t
+        else: self.l_stego.config(image=img_t); self.l_stego.image = img_t
+
+    def run_embed(self):
+        if not self.cover_path.get() or not self.key_k.get(): return
         
-        file_path = filedialog.askopenfilename(
-            initialdir=initial_dir,
-            title="Chọn ảnh .pgm",
-            filetypes=(("PGM files", "*.pgm"), ("All files", "*.*"))
-        )
-        
-        if file_path:
-            self.cover_path.set(file_path)
-            # Hiển thị ảnh lên giao diện
-            img = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
-            self.display_image(img, "cover")
+        cover = cv2.imread(self.cover_path.get(), cv2.IMREAD_GRAYSCALE)
+        msg = self.msg_input.get("1.0", tk.END).strip()
+        if self.text_file_path.get() != "Chưa chọn file":
+            with open(self.text_file_path.get(), 'r') as f: msg = f.read()
 
-    def display_image(self, img, type="cover"):
-        # Chuyển đổi từ OpenCV sang Tkinter
-        img_pil = Image.fromarray(img)
-        img_pil = img_pil.resize((350, 350))
-        img_tk = ImageTk.PhotoImage(img_pil)
+        try:
+            t1 = time.time()
+            stego = LSB_Sub.embed(cover, msg, self.key_k.get())
+            t2 = time.time()
 
-        if type == "cover":
-            self.canvas_cover.config(image=img_tk, text="")
-            self.canvas_cover.image = img_tk
-        else:
-            self.canvas_stego.config(image=img_tk, text="")
-            self.canvas_stego.image = img_tk
+            # Tính Metrics
+            aec = metrics.calculate_aec(msg, cover.shape)
+            psnr = metrics.calculate_psnr(cover, stego)
+            ssim = metrics.calculate_ssim(cover, stego)
+            uiqi = metrics.calculate_uiqi(cover, stego)
+            ncc = metrics.calculate_ncc(cover, stego)
+            kl = security.get_kl_divergence(cover, stego) # Gọi đúng hàm tính KL
+            rm, sm = security.rs_analysis_demo(stego)
 
-    def process_embed(self):
-        if not self.cover_path.get() or not self.key_k.get():
-            messagebox.showwarning("Thiếu dữ liệu", "Vui lòng chọn ảnh và nhập khóa K!")
-            return
+            self.show_img(stego, "s")
+            self.current_stego = stego
 
-        # 1. Lấy dữ liệu từ UI
-        cover_img = cv2.imread(self.cover_path.get(), cv2.IMREAD_GRAYSCALE)
-        message = self.msg_text.get("1.0", tk.END).strip()
-        key = self.key_k.get()
-        method = self.method_var.get()
+            # Hiển thị kết quả lên UI
+            self.res_txt.delete("1.0", tk.END)
+            res = f"[QUALITY METRICS]\n"
+            res += f"PSNR: {psnr:.2f} dB | SSIM: {ssim:.4f}\n"
+            res += f"AEC : {aec:.4f} bpp | UIQI: {uiqi:.4f} | NCC: {ncc:.4f}\n"
+            res += f"Time: {(t2-t1)*1000:.2f} ms\n\n"
+            res += f"[SECURITY ANALYSIS]\n"
+            res += f"KL Divergence: {kl:.8f}\n"
+            res += f"RS Analysis  : Rm={rm:.2f}, Sm={sm:.2f}\n"
+            self.res_txt.insert(tk.END, res)
 
-        # 2. Mô phỏng xử lý (TV1, 2, 3 sẽ thay bằng hàm thật tại đây)
-        start_time = time.time()
-        
-        # GIẢ LẬP: Ở đây bạn sẽ gọi core.lsb.embed(...)
-        time.sleep(0.5) # Giả lập thời gian chạy
-        stego_img = cover_img.copy() 
-        # Thêm nhiễu nhẹ để giả lập có nhúng
-        stego_img = cv2.add(stego_img, np.random.randint(0, 2, cover_img.shape, dtype=np.uint8))
-        
-        end_time = time.time()
+            # Hiện PDH
+            h_c = security.get_pdh(cover)
+            h_s = security.get_pdh(stego)
+            plt.figure("PDH Analysis", figsize=(8,4))
+            plt.plot(h_c[:30], 'b-', label='Cover')
+            plt.plot(h_s[:30], 'r--', label='Stego')
+            plt.legend(); plt.show()
 
-        # 3. Hiển thị kết quả & Đánh giá (TV4 viết module này)
-        self.display_image(stego_img, "stego")
-        
-        # Tính toán giả lập PSNR
-        mse = np.mean((cover_img - stego_img) ** 2)
-        psnr = 100 if mse == 0 else 20 * np.log10(255.0 / np.sqrt(mse))
-        
-        self.psnr_label.config(text=f"PSNR: {psnr:.2f} dB")
-        self.time_label.config(text=f"Thời gian: {(end_time - start_time)*1000:.1f} ms")
-        messagebox.showinfo("Thành công", f"Đã nhúng bằng phương pháp {method}")
+        except Exception as e: messagebox.showerror("Error", str(e))
 
-    def process_extract(self):
-        # TV1, 2, 3 sẽ viết code trích xuất dựa trên khóa K
-        # Nếu khóa K sai, hiển thị message lỗi hoặc rác
-        key = self.key_k.get()
-        if key == "123": # Giả lập key đúng
-            messagebox.showinfo("Kết quả trích xuất", "Tin nhắn: Hello world!")
-        else:
-            messagebox.showwarning("Extract rác", "Sai khóa K! Dữ liệu trích xuất: x@#$!128*&")
+    def run_extract(self):
+        if not hasattr(self, 'current_stego'): return
+        msg = LSB_Sub.extract(self.current_stego, self.key_k.get())
+        messagebox.showinfo("Extracted", msg)
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = SteganoToolApp(root)
-    root.mainloop()
+    root = tk.Tk(); app = SteganoToolApp(root); root.mainloop()
