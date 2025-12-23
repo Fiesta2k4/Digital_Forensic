@@ -1,0 +1,379 @@
+Digital image steganography: A literature survey
+Pratap Chandra Mandala,b, Imon Mukherjeeb,⇑, Goutam Paulc, B.N. Chatterjia,d
+a Computer Sc. & Engineering, B.P. Poddar Institute of Management & Technology, India
+bComputer Sc. & Engineering, Indian Institute of Information Technology Kalyani, India
+c R.C. Bose Centre for Cryptology and Security, Indian Statistical Institute, Kolkata, India
+dElectronics and Electrical Communication Engineering (Retd.), IIT Kharagpur, India
+art i cle info
+Article history:
+Received 20 November 2020
+Received in revised form 22 May 2022
+Accepted 22 July 2022
+Available online 28 July 2022
+Keyword:
+Data hiding
+Steganography
+Spatial domain
+Transform domain
+Information security
+Steganalysis
+abstract
+Steganography is the art of concealing information in a cover media in such a way that the
+presence of the information is unknown. Digital image steganography accomplishes the
+potential for protected communication that is crucial in most of the applications nowadays.
+Steganography has several beneficial applications. It has been driven to the frontrunner of
+present security systems by the amazing development in computational power, the rise in
+security consciousness. The main challenge in proposing a steganographic technique is to
+maintain a suitable balance among higher embedding capacity, imperceptibility, and secu
+rity that separate it from correlated systems like cryptography and watermarking. This
+article offers an extensive state-of-the-art review and analysis of some recent stegano
+graphic techniques. Furthermore, we have discussed popular steganography tools in detail.
+Challenges in the recent deep learning based steganographic techniques have been
+addressed. To explore the domain, the article concludes with mentioning some future
+research directions.
+2022 Elsevier Inc. All rights reserved.
+1. Introduction
+The internet revolution offers ease in digital communication; at the same time, it is also a challenge for us to secure the
+message over the open network. For addressing the security of information, several approaches are presented as shown in
+Fig. 1. The security system plays a vital role to restrict the messages from being seized by an unauthorized person. Cryptog
+raphy [1] protects the content of the information that allows only the sender and intended beneficiary of communication to
+view its contents. Information hiding techniques include steganography [2,3] and watermarking [4]. Both watermarking and
+steganography are used to obscure the confidential information within the innocent media like image, video, audio, and text,
+but both have different purposes. Watermarking is used for authentication and copyright protection of digital data. In con
+trast, steganography [5] is the art of concealing information. Imperceptibility is of major importance for steganographic tech
+nique, whereas watermarking provides the maximum importance to robustness. On the basis of the capability of recovering
+the cover images, data hiding techniques are categorized into two groups: irreversible [6] and reversible data hiding (RDH)
+[7]. If the cover image can be obtained after removal of the confidential data the process is said to be reversible data hiding;
+⇑ Corresponding author.
+E-mail addresses: pcmandal9@gmail.com (P.C. Mandal), imon@iiitkalyani.ac.in (I. Mukherjee), goutam.paul@isical.ac.in (G. Paul), bnchatterji@gmail.com
+(B.N. Chatterji).
+https://doi.org/10.1016/j.ins.2022.07.120
+0020-0255/ 2022 Elsevier Inc. All rights reserved.
+otherwiseit istermedasirreversibledatahiding.DE,histogramshifting,andInterpolationbasedtechniques,etc.,arethe
+examplesofreversibledatahidingtechniqueswhereasLSB,PVD,etc.,areexamplesof irreversibledatahidingtechniques.
+Conversely,steganalysis[8], istheartofidentifyingthehiddeninformationembeddedindigitalmedia.Aftertheheart
+breakingincidentsof11th September2001, researchershavegivengreat importancetothetopicsteganographyandste
+ganalysis[3]. Ithasalsonowbecomeanimportantresearchtopicduetothepopularityofsocialmediaapplicationslike
+Facebook,WhatsApp, etc. Bothhave several genuine applications and signifygreat researchopeningswaiting tobe
+addressed.
+1.1.Contributions
+1. Anextensivereviewofsteganographictechniquesindifferentdomainshasbeenprovided.Specialemphasishasbeen
+givenontheinsightfulanalysisontheunderdevelopedaspectsorfailcasesofthestate-of-the-artworks.Wehavealso
+providedacomparativeanalysisoftherecentstate-of-the-artworks.
+2. Performancemeasurementcriteriaofasteganographictechniquelikecapacity,quality,andsecurityhavebeendiscussed
+indetail.Securityofthetechniqueshavebeenanalyzedbyvariousstate-of-theartattackslikeRSanalysis,PDHattack,
+relativeentropy,steganalysistoolslikeStegExpose,andbenchmarktool likeStirMarkBenchmark4.0,etc.
+3. Applicationsofdatahidingtechniqueshavebeenmentioned.
+4. Challengesindeeplearningbasedsteganographyhavebeendiscussed.
+5. Thecommonlyusedsteganographytoolsarepresentedindetail.Acomparativeanalysisandtheirweaknessagainstthe
+steganalysistoolshavealsobeendiscussed.
+6. Somerecommendationshavebeengiventhatcanhelptoworkintherightway.
+7. Futureresearchdirectionshavebeenprovidedthatcanbepromisinginthecomingdays.
+AlltheimportantabbreviationsarelistedinTable1.Tohaveavibrantunderstandingoftheirfunctionalitiesacomparison
+amongcryptography,watermarking,andsteganographyisshowninTable2.
+1.2.AGlimpseofHistory
+Theknowledgeofdatahidingcanbefoundsincetheeraof ‘‘Rig-Veda”(1500–1000BCE).MostoftheSanskritslokas
+havesomeapparentmeanings,butdeepermeaningsarecoveredinside.ThenamesteganographyisderivedfromGreek
+wordsthatliterallymean‘‘CoveredWriting”.Attheearlystage, ithasbeenmainlyusedformilitary,diplomaticandfora
+rarecasepeopleuseditforprivatepurposes.Fromthedocumentsithasbeenfoundthataround440BC,Demaratussent
+acautionaboutanupcomingattacktoGreeceonawaxtablet.Themessagewaswrittenonawoodenbackingandthen
+shieldedbybeewax.Itseemedunused.Inthe5thcenturyBCHistaiacuscutoffaslave’shair,tattooedamessageonhisskull.
+Theslavetransferredtheinformationafterhishairgrewback[9].ItalianmathematicianJeromeCardandiscoveredaChinese
+ancientmethodofsecretwriting500yearsago.SteganographybecameprevalentduringWorldWarIIwheretherewasan
+inadequatenumberofserviceablecommunicationpathsforresistanceinEuropethatcreatedaperfectatmosphereforevolv
+ingtechniquesofsecretcommunication.Keywaseaseofdataexchangeandhighsecurity.Dataweretransportedthrough
+radiorelaycodedintonamedaywishes,birthdaywishesorinpromotionalannouncements.BecauseofthatNazibannedlow
+Fig.1. Basicsecuritysystembranches[3].
+P.C.Mandal, I.Mukherjee,G.Pauletal. InformationSciences609(2022)1451–1488
+1452
+frequencyradioheadsets.AmongseveralsteganographymethodsappliedinWorldWarIIonewastheuseofunnoticeable
+inkormicrodots.Microdotsarebasicallyatextoranimagesignificantlyminimizedtoavoidexposure.In1945,Morsecode
+hasbeenhiddeninadrawingasshowninFig.2.Theconcealeddataisencodedontotheextentofgrasstogetherwiththe
+river.Thelonggrasssignifiesalineandtheshortgrassspecifiesapoint.Theinterpretedinformationisas:‘‘Complimentsof
+CPSAMAtoourchiefColHaroldR.ShawonhisvisittoSanAntonioMay11th1945”[10].Allstatedapproachesaretermedas
+mechanicalsteganographythatcanstillbeappliedtodaybutthedigitalrevolutionin21st centuryhasmadesecuretech
+niquesofdatatransfersforeveryone.
+Therestofthepaperisframedasfollows:Section2explainsthefundamentalconcepts.Section3specifiesthegeneral
+modelofsteganography.Section4definestheevaluationcriteriaofanysteganographictechnique.Section5describesthe
+applicationofsteganography.ClassificationanddiscussiononsteganographictechniqueisshowninSection6. Section7
+explainsadaptivesteganography.DeeplearningbasedsteganographyisdiscussedinSection8.Analysisofperformance
+oftherecentstate-of-the-artworksisdiscussedinSection9.SomepopularsteganographictoolshavebeendescribedinSec
+tion10.ComparisonamongsteganographytoolsareprovidedinSection11.Briefdiscussiononsteganalysisisalsopresented
+Table1
+Listof importantAbbreviations.
+AEC AverageEmbeddingCapacity NCC NormalizedCrossCorrelation
+ANN ArtificialNeuralNetworks NN Neuralnetwork
+CIE CodebooktoImprovetheEMD OPAP OptimalPixelAdjustmentProcess
+DCT DiscreteCosineTransform PDH PixelDifferenceHistogram
+DFT DiscreteFourierTransform PEHS PredictionErrorHistogramshifting
+DE DifferenceExpansion PRNG PseudoRandomNumberGenerator
+DH DifferenceHistogram PSNR PeakSignaltoNoiseRatio
+DWT DiscreteWaveletTransform PVD PixelValueDifferencing
+DWTDM DiscreteWaveletTransformDifference PBPVD ParityBitPixelValueDifference
+Modulation PVG PixelValueGrouping
+ENMI EnhancedNeighborMeanInterpolation QVD QuotientValueDifferencing
+EMD ExploitingModificationDirection RDH ReversibleDataHiding
+GAN GenerativeAdversarialNetwork RIASIWT RobustImageAdaptiveSteganography
+HDWT HaarDiscreteWaveletTransform usingIntegerWavelettransform
+HVS HumanVisualSystem RDHEI ReversibleDataHidinginEncryptedImages
+HM HistogramModification RDWT RedundantDiscreteWaveletTransform
+HS HistogramShifting ROC ReceiverOperatingCharacteristic
+HUGO HighlyUndetectablesteGO ROI Regionof Interest
+IEMD ImprovedEMD RS RegularandSingular
+IRDH Irreversibledatahiding SRM SpatialRichModel
+iRMDR improvedRightmostDigitReplacement SSIM StructuralSimilarityIndexMetric
+INP InterpolationbyNeighboringPixel SVD SingularValueDecomposition
+IWT IntegerWaveletTransform SVM SupportVectorMachine
+JRM JPEGRichModel SVR Supportvectorregression
+LSB LeastSignificantBit STC SyndromeTrellisCoding
+MDLE MultidirectionalLineEncoding UIQI Universal ImageQualityIndex
+MPE ModificationofPredictionError UED UniformEmbeddingDistortionmetric
+MPSO ModifiedParticleSwarmOptimization UNIWARD UNIversalWAveletRelativeDistortion
+MSE MeanSquaredError WOW WaveletObtainedWeights
+NMI NeighborMeanInterpolation
+Table2
+Comparisonamongcryptography,watermarking,andsteganography.
+Characteristics Cryptography Watermarking Steganography
+Secretdata Plaintext Watermark Payload
+Carrier Usuallytextbased image/audiofiles Anydigitalmedia
+Keyconstraint Mandatory Optional Dependsonapplication
+Objective Protectionofcontent Protectionofcopyright Secretcommunication
+Concern Robustness Robustness Detectability/capacity
+Visibility Always Sometimes Never
+Result Cipher-text Watermarkedfile Stegofile
+Typeofattacks Cryptanalysis Imageprocessing Steganalysis
+Robustness Dependsoncomplexity Againstremovingor Againstdetectionof
+ofcipheringalgorithm tamperingsecretdata presenceofsecretdata
+Challenges Keymanagement, Robustness Capacity,
+Encryptionalgorithm Imperceptibility,
+complexity Security
+Failswhen Deciphered Itisexchanged/eliminated Secretdataisdetected
+P.C.Mandal, I.Mukherjee,G.Pauletal. InformationSciences609(2022)1451–1488
+1453
+inSection12.Section13discussesthechallengesindeeplearningbasedsteganography.Somefutureresearchdirectionsare
+mentionedinSection14andthearticleisconcludedinSection15.
+2.FundamentalConcepts
+Thestudyusesafewtermscommonlyspecifiedbysteganographygroups.Theimagewhichiscarryingtheembedded
+messageistermedasa‘‘cover image”.Theterm‘‘stegoimage”meanstheimagewithahiddenmessage.Theprocessby
+whichsecret informationisembeddedwithinthecovermediaisreferredtoas ‘‘steganography”.Theterm‘‘steganalysis”
+specifiesdifferentstatisticalanalysis,whichisusedforattackingthesteganographicmethods.
+3.GeneralModelofSteganography
+ThemodernsteganographycanbemodeledbySimmons[11]inthefamousprisoner’sproblem.Thepaperexplainsabout
+thecompetenciesandvirtuesofsteganographyinaninsecurechannelthatinvolvesthreeparties:Alice,Bob,andWendy.
+Assume,AliceandBobarethetwoprisonerswhoworktogether foranescapeplan.Theircommunicationsarewatched
+byawarden,Wendy.Thegeneralstructureofasecurechannel forsteganographyisdepictedinFig.3.Thesender(Alice)
+wantstosendsecretdata(D)tothereceiver(Bob),selectsaninnocuouscoverimage(C).Later,Alicehidesthesecretdata
+(D)inthecoverimage(C)andappliesastegokey(K)whichisoptional.Atlast,Alicegetsastegoimage(S)thatmustnotbe
+distinguishedfromthecoverimage(C).Thestegoimage(S)specifiesthecoverimage(C)alongwiththeconfidentialdata(D)
+concealedwithinthecoverimagewithasecretkey(K).Theprocessiscalledtheembeddingprocess(X).Then,Alicesends
+thestegoimage(S)toBobthroughacommunicationchannel.TheaimofthesystemistostopWendy(unauthorizedperson)
+fromdetectingtheconcealeddata(D).Onthereceiverend,duringtheextractingprocess(X0),Bobretrievestheconcealed
+data(D)usingtheextractionalgorithmandthestegokey(K)usedintheembeddingprocess.Then, theprocesscanbefor
+mulatedusingtheEq. (1)andEq. (2)asfollows:
+X:ðC;D;KÞ!S ð1Þ
+X0 :ðS;K0Þ!ðD0;C0Þ ð2Þ
+Ideally, thesteganographictechniqueshouldguaranteeD¼D0anditisnotcompulsorytohaveC¼C0.WhenCandC0are
+identical, thetechnique is termedas reversibledatahiding(RDH), otherwisethetechnique is irreversibledatahiding.
+Althoughthepublickeysteganographicsystem[12]isdescribedinvariousliteratures,theprivatekeysteganographicsys
+tem,whereK¼K0 isassumed, remainstheutmostsituationinthesecretcommunication.
+4.EvaluationCriteriaofaSteganographyScheme
+Theperformanceofasteganographyschemeismeasuredbythreemaincriteria:capacity, imperceptibility,andsecurity.
+Furthermore, thesecriteriahelpustomoveintherightdirectionforenhancingthetechniques.
+Fig.2. CamouflageofMorsecode(1945).Theconcealeddataisencodedintothegrasslengthtogetherwiththeriver[10].
+P.C.Mandal, I.Mukherjee,G.Pauletal. InformationSciences609(2022)1451–1488
+1454
+4.1.EmbeddingCapacity
+Itisvitaltofindouthowmanybitsasteganographyschemecanembedimperceptiblyincomparisontotheothertech
+niques.Assessingthecapacityof asteganographymethodmeans todeterminethehighestnumberofbits that canbe
+embeddedimperceptibly. Itisassessedbythebitsperpixel(bpp).AverageEmbeddingCapacity(AEC)isdefinedinimage
+steganographyas,
+AECðbppÞ¼ D Totalembeddedbits
+Totalnumberofpixelsin theimage :
+4.2. Imperceptibility/StegoImageQuality
+Qualityisthemajorperceptualconcernformoststeganographymethodstoescapefromdetection.Severalmetricsare
+usedformeasuringthestegoimagequality.Letusconsider,UandVrefertothecoverandthestegoimages.PandQbe
+therowsandcolumnsofanimage.
+PeakSignaltoNoiseRatio(PSNR):PSNR[13,14]isdefinedas,
+PSNR¼ D10log10
+U2
+max
+MSE ;
+whereUmax isthemaximumpixelvalueandtheMean-Squared-Error(MSE)iscomputedby,
+MSE¼ D
+XP
+e¼1
+XQ
+f¼1
+½Uðe;fÞ Vðe;fÞ2
+P Q ;
+HigherthePSNRvaluebetterthequalityoftheimages. Inthatcaseboththecoverandthestegoimagesareverysimilarto
+eachother.
+Structural Similarity IndexMetric (SSIM): In imagesteganography, SSIM[15] calculates thestructural similarities
+betweenhostanddistortedimages.
+LetUandVspecifythecoveranddistortedimage.SSIMcanbecalculatedas:
+SSIMðU;VÞ¼ D ð2lu
+lvþxÞð2ruvþyÞ
+ðl2
+u
+þl2 vþxÞðr2
+u
+þr2 vþyÞ :
+where,lu
+andlv implythemeanofUandV;r2
+u
+andr2 varethevarianceofUandV;ruvmeansthecovarianceofUandV.Two
+positiveconstantsx=ðh1:WÞ2andy=ðh2:WÞ2,whereW=2totalbits=pixel 1,h1=0.01andh2=0.03.xandyareusedhereto
+avoidnulldenominator.
+UniversalImageQualityIndex(UIQI):UIQI[16]betweentwoimagesUandV,canthecomputedas,
+Fig.3. Generalmodelofsteganography.
+P.C.Mandal, I.Mukherjee,G.Pauletal. InformationSciences609(2022)1451–1488
+1455
+P.C. Mandal, I. Mukherjee, G. Paul et al.
+Information Sciences 609 (2022) 1451–1488
+4ruvlu
+lv
+UIQI¼ D
+r2
+u 
+þ r2 v l2
+u 
+þl2 v
+;
+where, lu 
+and lv imply the mean of U and V, r2
+u 
+and r2 v are the variance of U and V, ruv are the covariance between U and V.
+The values of UIQI vary from 1 to 1. UIQI is equal to 1 when two images are same.
+Normalized Cross Correlation (NCC): NCC indicates the amount of similarity between two images. NCC [17] is calculated
+as,
+X P
+XQ
+1
+P Q
+e¼1
+f ¼1
+½Uðe;fÞ:Vðe;fÞ
+NCCðU;VÞ¼ D
+;
+ru
+rv
+where, ru and rv are the standard deviations of U and V. NCC value is 0 for two dissimilar images and 1 for two identical
+images.
+4.3. Security
+Steganographic system faces several attacks (active/passive). The most vital assessment criterion in the steganographic
+system is security. The security of a technique can be measured with respect to the resistance against steganalysis attack,
+viz., StegExpose, pixel difference histogram (PDH), and standard tool, viz., StirMark benchmark 4.0. etc.
+Receiver Operating Characteristic (ROC)
+The steganalysis techniques usually attempt to identify or to excerpt the concealed message from the stego image
+deprived of any prior knowledge of embedding technique. When applying the steganalysis techniques on a test data set,
+the four situations may occur.
+True positive (TP) signifies number of stego images properly classified as stego.
+False negative (FN) signifies number of stego images incorrectly classified as cover.
+True negative (TN) signifies number of cover images properly classified as cover.
+False positive (FP) signifies number of cover images incorrectly classified as stego.
+The confusion matrix (as shown in Table 3) is made to differentiate the test data set as cover or stego when a steganalysis
+technique is applied on it. Receiver operating characteristic (ROC) curve [18] is a graph to show the performance of a clas
+sifier at varying classification threshold. The ROC curve plots two parameters: FP rate and TP rate where,
+Table 3
+Confusion matrix.
+Predicted: No
+Predicted: Yes
+Actual: No
+Actual: Yes
+True negatives
+(TNs)
+False negatives
+(FNs)
+False positives
+(FPs)
+True positives
+(TPs)
+TP rate ¼
+TP
+TP þFN ;FP rate ¼
+FP
+FP þTN :
+The area under the curve (AUC) ROC is a common metric for calculating the test accuracy of a classifier. Reasonable tests
+should have 0.5 6AUC 61. AUC close to 1 means a very good diagnostic test. Random guessing generates the diagonal line
+between the points (0, 0) and (1, 1) which has an area of 0.5. Fig. 4 shows that Method A is closer to random guess line com
+pared to Method B and Method B is closer to random guess line compared to Method C. Hence, AUC value of Method A is
+lower than the Method B and Method C. Therefore, Method A provides higher security than the Method B and method C.
+Regular/Singular (RS) analysis
+RS analysis [19] is used to verify the security of a steganographic scheme. It divides the stego-pixels into three groups,
+regular group RM and RM, the singular group SM and SM and the unusable group. The comparison between four parameters
+(RM;RM;SM;SM) are used to notice the presence of the hidden message. The steganographic technique beats the RS analysis
+when the condition RM ffi RM > SM ffi SM is satisfied.
+Otherwise, the underlined steganography will be noticed by RS analysis.
+Relative Entropy or Kullback–Leibler Divergence Test
+To assess the security of a steganographic method, the relative entropy (E) [20] between the probability distributions of
+the cover image (C) and the stego image (S) can be computed by the Eq. (3),
+X
+EðSjjCÞ¼
+sðxÞlog
+sðxÞ
+cðxÞ :
+ð3Þ
+1456
+Atechniqueiscompletelysecuredwhentherelativeentropybetweentwoprobabilitydistributionfunctionsiszero.EðSjjCÞ
+istreatedasadistancebetweenthemeasurescands. Ifthenumberofembeddedbitsincreases,therelativeentropyinthe
+stegoimageincreases.
+PixelDifferenceHistogram(PDH)
+ThesecurityofamethodcanbetestedbythePDHanalysis[21].ThePDHisattainedfromthehistogramofthedifference
+betweencontiguouspixels.Fig.5specifiesthatthePDHcurveofthecoverandthestegoimagesaresimilar,andnoclear
+artifactsareexposed.Hence, itcanbeconcludedthatthemethodissecureforPDHanalysis.
+StirMarkBenchmark4.0
+Fig.4. ROCcurveofasteganographictechnique.
+Fig.5. PDHofPeppersimage.
+P.C.Mandal, I.Mukherjee,G.Pauletal. InformationSciences609(2022)1451–1488
+1457
+P.C. Mandal, I. Mukherjee, G. Paul et al.
+Information Sciences 609 (2022) 1451–1488
+To measure the strength, the steganographic techniques can be verified using the benchmark tool, viz., StirMark bench
+mark 4.0 [22]. The StirMark benchmark has offered a series of attacks, common image processing tasks. These tasks are
+parameterized to obtain varying potency of the manipulation. Both cover and stego images are used as an input dataset
+to produce test data for evaluation of robustness. Common transformations are small random distortions, rotation, scaling,
+self-similarities and additive noise, etc. Test-AdditiveNoise places certain noise to the input image. The consequence is a cer
+tain degree of distortion to the image.An insignificant change in the cover and its corresponding stego version implies the
+strength of a scheme.
+5. Applications of Data Hiding Techniques
+Areas like medical, industry, multimedia, military, and many others need careful communication for security purposes.
+Data hiding technique is related to, but not limited to the following areas:
+1. General communication: People may use these methods to deliver extra security in their day-to-day communica
+tions [23]. Numerous administration officials use this mechanism while interacting among themselves through the
+intranet, internet, etc.Criminals and dissidents also use steganography for their secret communication.
+2. Military agencies: Militaries [24] need to communicate among themselves by passing stealthy data in such a manner
+that the enemies cannot understand or cannot perceive the presence of the concealed data. Hence, militaries use this
+technique in their communications.
+3. Medical Science: It is also used in the medical field [25], for preserving the privacy of patients’ data. A connection is
+preserved by hiding the patient’s data within the image without decreasing its quality. The work [26] also has given
+newideas about patients’ data camouflage in digital images. The extra data should not degrade the image quality. One
+more encouraging research on DNA-steganography in medical science is going on. It can be utilized to store the par
+ticulars of a person into its DNA itself. The research in this area is not yet developed enough.
+4. TV Broadcasting: One useful area is TV broadcasting, the safe transmission of secret data, video/audio synchroniza
+tion, checksum embedding, and TCP/IP packets.
+5. Document Authentication: Concealed data inside a digital document can comprise a digital signature that confirms
+its authenticity [23]. Steganography is used for embedding individual data in smart identity card.
+6. Copyright Information and Document Tracking: Originators of digital content always use steganography/water
+marking techniques to preserve the copyright information etc. inside it. By authenticating concealed data one can rec
+ognize the genuine proprietor of a document andprovides a safeguard of valuable properties [23].
+7. Electronic Money Transfer: Electronic money is based on secret and unspecified communications systems. Experts of
+different money transfer controlling bodies can consider steganographic data transfer as a prospective and safe
+mechanism.
+8. Radar Systems: Recent transit radar systems can assimilate messages composed in a radar base station, to avoid
+transmitting text files and images separately to the receiver’s base stations.
+9. RemoteSensing:Remotesensing [27] combines the vector maps and digital imagery of a site. It improves the analysis
+of the cultivated areas, including urban and natural locations among others.
+10. Digital Elections: A massive amount of money is spent to complete the elections every year. The governmentsof dif
+ferent countries may think of a new idea of the digital election that needs lower cost. May even shrink the public
+harassment as everyone can cast his/her vote from home.
+Some other applications include annotation and SmartSteg on mobile devices, thereby securing multimodal biometric data
+[28]. Steganography is not only popular for its ethical values but also for some dishonest issues, like spreading spam, mis
+chievous viruses, and harmful links sent by the cyber-criminals.
+6. Classification of Steganographhy
+Image steganography can be categorized into two domains: spatial domain steganography and transform domain
+steganography as shown in Fig. 6.
+6.1. Spatial Domain based Steganography
+The easiest approach of message hiding in images is to embed the message in the cover image pixels in the spatial domain
+[29] itself. Here, pixel values are modified directly for embedding the stealthy message. Spatial domain techniques provide
+easiness in embedding and extraction compared to frequency domain techniques. Different spatial domain techniques are
+presented in Fig. 7
