@@ -71,9 +71,9 @@ class SteganoToolApp:
 
         # 1. Chọn ảnh
         ttk.Label(left, text="1. Chọn ảnh cover:").pack(anchor="w")
-        self.folder_cb = ttk.Combobox(left, values=["BOSSbase_256", "SUNI_02", "SUNI_04"])
+        self.folder_cb = ttk.Combobox(left, values=["standard", "BOSSbase_256", "SUNI_02", "SUNI_04"])
         self.folder_cb.pack(fill="x", pady=5)
-        self.folder_cb.set("BOSSbase_256")
+        self.folder_cb.set("standard")
         ttk.Button(left, text="Duyệt ảnh (.pgm)", command=self.load_image).pack(fill="x")
         ttk.Label(left, textvariable=self.cover_path, font=("Arial", 7), wraplength=180, foreground="blue").pack()
 
